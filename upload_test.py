@@ -1,21 +1,15 @@
-from clearml import Task, StorageManager
+from clearml import Task
 
-# Khởi tạo task
-task = Task.init(project_name="MinIO-Test", task_name="upload_test")
+# Tạo task đầu tiên
+task1 = Task.init(project_name="Examples", task_name="create_artifact")
 
-# File cần upload
-local_file = "test_file.txt"
+# Tạo file test
+local_file = "sample.json"
 with open(local_file, "w") as f:
-    f.write("Hello ClearML + MinIO!")
+    f.write('{"message": "Hello ClearML"}')
 
-# Upload file lên Storage (MinIO)
-# Sử dụng StorageManager.put_file để tương thích ClearML 2.x
-remote_url = StorageManager.put_file(
-    local_file,
-    name="test_file.txt",  # Tên file trên remote
-    parent_uri="s3://mybucket/",  # URI của bucket trên MinIO
-)
+# Upload file như artifact
+task1.upload_artifact(name="data file", artifact_object=local_file)
 
-print(f"File uploaded to: {remote_url}")
-
-task.close()
+# Kết thúc task1 để có thể khởi tạo task khác
+task1.close()
